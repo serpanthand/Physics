@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Revision Tracker</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2e2e2e 100%);
+            color: #d4af37;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 85%;
+            max-width: 900px;
+            background: linear-gradient(145deg, rgba(0, 0, 0, 0.8), rgba(40, 40, 40, 0.6));
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            border-radius: 16px;
+            padding: 40px;
+            margin: 30px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            transform: rotate(30deg);
+            pointer-events: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 8px;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            color: #eee;
+            transition: all 0.3s ease;
+        }
+
+        th {
+            background: linear-gradient(90deg, #d4af37, #c0992b);
+            color: #1a1a1a;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            border-radius: 8px 8px 0 0;
+        }
+
+        tbody tr {
+            background: linear-gradient(to right, rgba(40, 40, 40, 0.8), rgba(60, 60, 60, 0.6));
+            border-radius: 8px;
+        }
+
+        tbody tr:hover {
+            background: linear-gradient(to right, rgba(60, 60, 60, 0.8), rgba(80, 80, 80, 0.6));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        td:nth-child(2), td:nth-child(3), td:nth-child(4) {
+            text-align: center;
+        }
+
+        input[type="radio"] {
+            cursor: pointer;
+            transform: scale(1.4);
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #333;
+            border: 2px solid #d4af37;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        input[type="radio"]:checked {
+            background: linear-gradient(45deg, #d4af37, #c0992b);
+            border-color: #c0992b;
+            box-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+        }
+
+        input[type="radio"]:checked::after {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #1a1a1a;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        input[type="radio"]:hover {
+            transform: scale(1.6);
+            box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+        }
+
+        .topic {
+            font-weight: 600;
+            color: #f0e6b2;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 25px;
+            background: #333;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid #d4af37;
+            position: relative;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #d4af37, #c0992b);
+            width: 0%;
+            transition: width 0.5s ease;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 10px;
+            box-shadow: inset 0 0 5px rgba(212, 175, 55, 0.5);
+        }
+
+        .progress-text {
+            text-align: center;
+            margin-top: 5px;
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 1.1em;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.7);
+        }
+
+        .reset-btn {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 25px;
+            background: linear-gradient(45deg, #d4af37, #c0992b);
+            border: none;
+            border-radius: 25px;
+            color: #1a1a1a;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .reset-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+        }
+
+        .watermark {
+            position: fixed;
+            bottom: 15px;
+            right: 15px;
+            font-size: 0.9em;
+            color: #777;
+            opacity: 0.8;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #2e2e2e;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(#d4af37, #c0992b);
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="progress-bar">
+            <div class="progress" id="progress"></div>
+        </div>
+        <div class="progress-text" id="progress-text">Progress: 0%</div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Topic</th>
+                    <th>Weak</th>
+                    <th>Medium</th>
+                    <th>Strong</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="topic">1) Capacitor</td>
+                    <td><input type="radio" name="capacitor" id="capacitor_weak"></td>
+                    <td><input type="radio" name="capacitor" id="capacitor_medium"></td>
+                    <td><input type="radio" name="capacitor" id="capacitor_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">2) Center of Mass</td>
+                    <td><input type="radio" name="center_mass" id="center_mass_weak"></td>
+                    <td><input type="radio" name="center_mass" id="center_mass_medium"></td>
+                    <td><input type="radio" name="center_mass" id="center_mass_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">3) Circular Motion</td>
+                    <td><input type="radio" name="circular_motion" id="circular_motion_weak"></td>
+                    <td><input type="radio" name="circular_motion" id="circular_motion_medium"></td>
+                    <td><input type="radio" name="circular_motion" id="circular_motion_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">4) Current Electricity</td>
+                    <td><input type="radio" name="current_electricity" id="current_electricity_weak"></td>
+                    <td><input type="radio" name="current_electricity" id="current_electricity_medium"></td>
+                    <td><input type="radio" name="current_electricity" id="current_electricity_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">5) Electrostatics</td>
+                    <td><input type="radio" name="electrostatics" id="electrostatics_weak"></td>
+                    <td><input type="radio" name="electrostatics" id="electrostatics_medium"></td>
+                    <td><input type="radio" name="electrostatics" id="electrostatics_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">6) Elasticity</td>
+                    <td><input type="radio" name="elasticity" id="elasticity_weak"></td>
+                    <td><input type="radio" name="elasticity" id="elasticity_medium"></td>
+                    <td><input type="radio" name="elasticity" id="elasticity_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">7) EM Wave</td>
+                    <td><input type="radio" name="em_wave" id="em_wave_weak"></td>
+                    <td><input type="radio" name="em_wave" id="em_wave_medium"></td>
+                    <td><input type="radio" name="em_wave" id="em_wave_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">8) EMI/AC</td>
+                    <td><input type="radio" name="emi_ac" id="emi_ac_weak"></td>
+                    <td><input type="radio" name="emi_ac" id="emi_ac_medium"></td>
+                    <td><input type="radio" name="emi_ac" id="emi_ac_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">9) Error</td>
+                    <td><input type="radio" name="error" id="error_weak"></td>
+                    <td><input type="radio" name="error" id="error_medium"></td>
+                    <td><input type="radio" name="error" id="error_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">10) Fluid</td>
+                    <td><input type="radio" name="fluid" id="fluid_weak"></td>
+                    <td><input type="radio" name="fluid" id="fluid_medium"></td>
+                    <td><input type="radio" name="fluid" id="fluid_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">11) Ray Optics</td>
+                    <td><input type="radio" name="ray_optics" id="ray_optics_weak"></td>
+                    <td><input type="radio" name="ray_optics" id="ray_optics_medium"></td>
+                    <td><input type="radio" name="ray_optics" id="ray_optics_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">12) Gravitation</td>
+                    <td><input type="radio" name="gravitation" id="gravitation_weak"></td>
+                    <td><input type="radio" name="gravitation" id="gravitation_medium"></td>
+                    <td><input type="radio" name="gravitation" id="gravitation_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">13) Heat & Thermo</td>
+                    <td><input type="radio" name="heat_thermo" id="heat_thermo_weak"></td>
+                    <td><input type="radio" name="heat_thermo" id="heat_thermo_medium"></td>
+                    <td><input type="radio" name="heat_thermo" id="heat_thermo_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">14) Magnetism</td>
+                    <td><input type="radio" name="magnetism" id="magnetism_weak"></td>
+                    <td><input type="radio" name="magnetism" id="magnetism_medium"></td>
+                    <td><input type="radio" name="magnetism" id="magnetism_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">15) Modern Physics</td>
+                    <td><input type="radio" name="modern_physics" id="modern_physics_weak"></td>
+                    <td><input type="radio" name="modern_physics" id="modern_physics_medium"></td>
+                    <td><input type="radio" name="modern_physics" id="modern_physics_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">16) NLM</td>
+                    <td><input type="radio" name="nlm" id="nlm_weak"></td>
+                    <td><input type="radio" name="nlm" id="nlm_medium"></td>
+                    <td><input type="radio" name="nlm" id="nlm_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">17) Rotation</td>
+                    <td><input type="radio" name="rotation" id="rotation_weak"></td>
+                    <td><input type="radio" name="rotation" id="rotation_medium"></td>
+                    <td><input type="radio" name="rotation" id="rotation_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">18) Sound Wave</td>
+                    <td><input type="radio" name="sound_wave" id="sound_wave_weak"></td>
+                    <td><input type="radio" name="sound_wave" id="sound_wave_medium"></td>
+                    <td><input type="radio" name="sound_wave" id="sound_wave_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">19) SHM</td>
+                    <td><input type="radio" name="shm" id="shm_weak"></td>
+                    <td><input type="radio" name="shm" id="shm_medium"></td>
+                    <td><input type="radio" name="shm" id="shm_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">20) UND</td>
+                    <td><input type="radio" name="und" id="und_weak"></td>
+                    <td><input type="radio" name="und" id="und_medium"></td>
+                    <td><input type="radio" name="und" id="und_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">21) Wave on String</td>
+                    <td><input type="radio" name="wave_string" id="wave_string_weak"></td>
+                    <td><input type="radio" name="wave_string" id="wave_string_medium"></td>
+                    <td><input type="radio" name="wave_string" id="wave_string_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">22) Wave Optics</td>
+                    <td><input type="radio" name="wave_optics" id="wave_optics_weak"></td>
+                    <td><input type="radio" name="wave_optics" id="wave_optics_medium"></td>
+                    <td><input type="radio" name="wave_optics" id="wave_optics_strong"></td>
+                </tr>
+                <tr>
+                    <td class="topic">23) Work Power Energy</td>
+                    <td><input type="radio" name="wpe" id="wpe_weak"></td>
+                    <td><input type="radio" name="wpe" id="wpe_medium"></td>
+                    <td><input type="radio" name="wpe" id="wpe_strong"></td>
+                </tr>
+            </tbody>
+        </table>
+        <button class="reset-btn" id="reset-btn">Reset All</button>
+    </div>
+    <div class="watermark">Created by Your Name</div>
+
+    <script>
+        const radios = document.querySelectorAll('input[type="radio"]');
+        const progress = document.getElementById('progress');
+        const progressText = document.getElementById('progress-text');
+        const resetBtn = document.getElementById('reset-btn');
+        const totalTopics = 23; // Number of topics
+        const maxScorePerTopic = 3; // Maximum score per topic (Strong = 3)
+        const maxTotalScore = totalTopics * maxScorePerTopic; // 23 * 3 = 69
+
+        function updateProgress() {
+            let totalScore = 0;
+
+            // Iterate over each topic (row)
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const weakRadio = row.querySelector('input[id$="_weak"]');
+                const mediumRadio = row.querySelector('input[id$="_medium"]');
+                const strongRadio = row.querySelector('input[id$="_strong"]');
+
+                if (weakRadio.checked) {
+                    totalScore += 1; // Weak: 1 point
+                } else if (mediumRadio.checked) {
+                    totalScore += 2; // Medium: 2 points
+                } else if (strongRadio.checked) {
+                    totalScore += 3; // Strong: 3 points
+                }
+            });
+
+            const percentage = Math.round((totalScore / maxTotalScore) * 100);
+            progress.style.width = `${percentage}%`;
+            progressText.textContent = `Progress: ${percentage}%`;
+        }
+
+        radios.forEach(radio => {
+            // Load saved state
+            const storedValue = localStorage.getItem(radio.id);
+            if (storedValue !== null) {
+                radio.checked = storedValue === 'true';
+            }
+
+            // Save state and update progress on change
+            radio.addEventListener('change', () => {
+                // Update local storage for all radios in the same group
+                const groupName = radio.name;
+                const groupRadios = document.querySelectorAll(`input[name="${groupName}"]`);
+                groupRadios.forEach(r => {
+                    localStorage.setItem(r.id, r.checked);
+                });
+                updateProgress();
+            });
+        });
+
+        resetBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to reset all progress?')) {
+                radios.forEach(radio => {
+                    radio.checked = false;
+                    localStorage.setItem(radio.id, 'false');
+                });
+                updateProgress();
+            }
+        });
+
+        // Initial progress update after loading saved states
+        window.addEventListener('load', updateProgress);
+    </script>
+</body>
+</html>
